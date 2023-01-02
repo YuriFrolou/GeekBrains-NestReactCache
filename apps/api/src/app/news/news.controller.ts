@@ -18,9 +18,9 @@ import {diskStorage} from "multer";
 import {HelperFileLoad} from "../../utils/HelperFileLoad";
 import {CreateNewsDto} from "../../dto/create-news.dto";
 import {NewsEntity} from "../../entities/news.entity";
-import { UpdateNewsDto } from '../../dto/update-news.dto';
-import { v4 as uuidv4} from 'uuid';
-import { Response } from 'express';
+import {UpdateNewsDto} from '../../dto/update-news.dto';
+import {v4 as uuidv4} from 'uuid';
+import {Response} from 'express';
 
 const PATH_NEWS = '/static/';
 HelperFileLoad.path = PATH_NEWS;
@@ -30,6 +30,7 @@ HelperFileLoad.path = PATH_NEWS;
 export class NewsController {
   private cashNews: NewsEntity[] | null = null;
   private eTag: string = uuidv4();
+
   constructor(private readonly newsService: NewsService) {
   }
 
@@ -46,7 +47,8 @@ export class NewsController {
       filename: HelperFileLoad.customFileName,
     }),
   }))
-  async create(@Body() createNewsDto: CreateNewsDto, @UploadedFile() cover: Express.Multer.File): Promise<NewsEntity> {
+  async create(@Body() createNewsDto: CreateNewsDto, @UploadedFile() cover: Express.Multer.File=null): Promise<NewsEntity> {
+    console.log(createNewsDto)
     if (cover?.filename) {
       createNewsDto.cover = PATH_NEWS + cover.filename;
     }
@@ -56,18 +58,15 @@ export class NewsController {
   }
 
 
-
   @Get()
   @UseInterceptors(CacheInterceptor)
-  @CacheKey('all-news')
-  @CacheTTL(60)
   @ApiResponse({
     status: 200,
     description: 'get all news',
     type: [NewsEntity],
   })
   @Header('Access-Control-Expose-Headers', 'etag')
-  async findAll(@Headers() headers: ParameterDecorator, @Res({passthrough:true}) res:Response) {
+  async findAll(@Headers() headers: ParameterDecorator, @Res({passthrough: true}) res: Response) {
 
     if (headers['if-none-match'] && this.eTag && headers['if-none-match'] === this.eTag) {
       return res.status(HttpStatus.NOT_MODIFIED).end();
@@ -77,9 +76,8 @@ export class NewsController {
       this.cashNews = await this.newsService.findAll()
       res.setHeader('etag', this.eTag);
       res.status(HttpStatus.OK);
-      return this.cashNews;
-      }
-
+    }
+    return this.cashNews;
   }
 
 
@@ -120,5 +118,16 @@ export class NewsController {
     this.cashNews = null;
     this.eTag = uuidv4();
     return await this.newsService.remove(id);
+  }
+
+  @Delete()
+  @ApiTags('news')
+  @ApiResponse({
+    status: 200,
+    description: 'delete all news',
+    type: [NewsEntity],
+  })
+  async removeAll(): Promise<NewsEntity[]> {
+    return await this.newsService.removeAll();
   }
 }

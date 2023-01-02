@@ -13,8 +13,7 @@ import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
 import {UsersService} from "../users/users.service";
 import {CommentsService} from "./comments/comments.service";
-import { Cache } from 'cache-manager';
-
+import {Cache} from 'cache-manager';
 
 
 @Injectable()
@@ -22,9 +21,10 @@ export class NewsService {
   constructor(@InjectRepository(NewsEntity) private readonly newsRepository: Repository<NewsEntity>,
               private readonly usersService: UsersService,
               private readonly commentsService: CommentsService,
-              @Inject(CACHE_MANAGER) private cacheService: Cache,
+              @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {
   }
+
   async createNews(createNewsDto: CreateNewsDto): Promise<NewsEntity> {
     const _user = await this.usersService.getUserById(createNewsDto.userId);
     if (!_user) {
@@ -44,24 +44,27 @@ export class NewsService {
 
   }
 
-  async findAll(): Promise<NewsEntity[]> {
-    const cachedData:NewsEntity[] = await this.cacheService.get(
-      'all-news',
-    );
+  async findAll() {
+    const cachedData: NewsEntity[] = await this.cacheManager.get('all-news');
     if (cachedData) {
+      console.log("Data from cash:");
+      console.log(await this.cacheManager.get('all-news'));
       return cachedData;
     }
-    const news=await this.newsRepository.find({relations: ['comments', 'user', 'comments.user']});
-    await this.cacheService.set('all-news', news);
+    const news = await this.newsRepository.find({relations: ['comments', 'user', 'comments.user']});
+    await this.cacheManager.set('all-news', news,1000);
     return news;
+
   }
 
 
   async findOneNews(id: number): Promise<NewsEntity> {
-    const cachedData:NewsEntity = await this.cacheService.get(
+    const cachedData: NewsEntity = await this.cacheManager.get(
       'one-news',
     );
     if (cachedData) {
+      console.log("Data from cash:");
+      console.log(await this.cacheManager.get('one-news'));
       return cachedData;
     }
     const news = await this.newsRepository.findOne({
@@ -74,7 +77,7 @@ export class NewsService {
     if (!news) {
       throw new NotFoundException();
     }
-    await this.cacheService.set('one-news', news);
+    await this.cacheManager.set('one-news', news);
     return news;
   }
 
@@ -106,6 +109,15 @@ export class NewsService {
       throw new NotFoundException();
     }
     await this.newsRepository.remove(news);
+    return await this.newsRepository.find();
+  }
+
+  async removeAll(): Promise<NewsEntity[]> {
+    const news=await this.newsRepository.find();
+    for(const item of news){
+      await this.newsRepository.remove(item);
+    }
+
     return await this.newsRepository.find();
   }
 }

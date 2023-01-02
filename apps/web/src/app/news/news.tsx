@@ -43,10 +43,10 @@ export function News() {
 
   return (
     <div>
-      {news ? <div className="container-fluid">
+      {news?.length!==0 ? <div className="container-fluid">
           <h1>Список новостей</h1>
           <div className='row d-flex flex-wrap'>
-            {news.map((item: any) => {
+            {news?.map((item: any) => {
               return (
                 <div className="col-lg-3 mb-3" key={item.id}>
                   <div className="card mb-1">

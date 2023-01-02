@@ -2,7 +2,7 @@
 import styles from './app.module.css';
 import {Routes, Route} from "react-router-dom";
 import Header from "./header/header";
-import React, { lazy } from 'react';
+import React from 'react';
 import News from "./news/news";
 import NewsDetail from "./news-detail/news-detail";
 import CreateNews from "./create-news/create-news";
