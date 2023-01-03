@@ -33,13 +33,13 @@ services:
 #      container_name: base
 #      build:
 #        context: ./
-#        dockerfile: Dockerfile.base
+#        dockerfile: Dockerfile
 #
 #  api:
 #      container_name: api
 #      build:
 #        context: ./
-#        dockerfile: ./apps/api/Dockerfile.base
+#        dockerfile: ./apps/api/Dockerfile
 #      ports:
 #        - 3001:3001
 #      environment:
@@ -51,7 +51,7 @@ services:
 #      container_name: web
 #      build:
 #        context: ./
-#        dockerfile: ./apps/web/Dockerfile.base
+#        dockerfile: ./apps/web/Dockerfile
 #      ports:
 #        - 3002:3002
 
