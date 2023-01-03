@@ -12,7 +12,7 @@ export function CreateNews(props: CreateNewsProps) {
   const [userId,setUserId]=useState<string>(String(sessionStorage.getItem('userId')));
   const [cover,setCover]=useState<File>();
 
-  //
+
   // const addNews = async(event:any) => {
   //   event.preventDefault();
   //   if(sessionStorage.getItem('userId')){
