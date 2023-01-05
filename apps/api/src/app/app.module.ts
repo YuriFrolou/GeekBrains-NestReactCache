@@ -28,8 +28,7 @@ import * as redisStore from 'cache-manager-ioredis';
     UsersModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
-      // host: process.env.TYPEORM_HOST || 'localhost',
-      host: 'localhost',
+      host: process.env.TYPEORM_HOST,
       username: process.env.TYPEORM_USERNAME,
       password: process.env.TYPEORM_PASSWORD,
       database: process.env.TYPEORM_DATABASE,
@@ -41,7 +40,9 @@ import * as redisStore from 'cache-manager-ioredis';
     }),
     CommentsModule,
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public'),
+      // rootPath: join(__dirname, '..', 'public'),
+      rootPath: join(__dirname, '..','web'),
+
     }),
     CacheModule.registerAsync(
       {
@@ -49,9 +50,8 @@ import * as redisStore from 'cache-manager-ioredis';
         useFactory: async() => {
           return {
             store: redisStore,
-            // host: process.env.REDIS_HOST || 'localhost',
-            host: 'localhost',
-            port: process.env.REDIS_PORT || 6379,
+            host: process.env.REDIS_HOST,
+            port: process.env.REDIS_PORT,
             expire: 60 * 60,
             ttl: 60,
             max: 1000,

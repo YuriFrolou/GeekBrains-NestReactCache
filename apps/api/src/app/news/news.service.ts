@@ -108,6 +108,10 @@ export class NewsService {
     if (!news) {
       throw new NotFoundException();
     }
+    const comments=await this. commentsService.findAll(id);
+    for(const item of comments){
+      await this.commentsService.remove(item['id']);
+    }
     await this.newsRepository.remove(news);
     return await this.newsRepository.find();
   }

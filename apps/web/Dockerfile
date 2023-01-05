@@ -1,6 +1,6 @@
-FROM node
+FROM node:19-alpine
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
 COPY . .
 
@@ -12,4 +12,5 @@ RUN npm run build:web
 
 EXPOSE 3002
 
-CMD ["npm", "run","start:web"]
+
+

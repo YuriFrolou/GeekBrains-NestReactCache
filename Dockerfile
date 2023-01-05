@@ -1,34 +1,28 @@
-FROM node:19 as build-stage
+FROM node:19-alpine As development
 
-MAINTAINER GeekBrains <support@geekbrains.ru>
+WORKDIR /usr/src/app
 
-USER root
+COPY package*.json ./
 
-ENV APPLICATION_NAME=gb-demo-app
+RUN npm install --only=development
 
-ENV SASS_BINARY_PATH=/opt/$APPLICATION_NAME/bin/vendor/linux-x64/binding.node
-
-WORKDIR ./
-
-COPY package.json package-lock.json ./
-
-RUN npm ci
-
-COPY ./ ./
-
-#RUN npm run test
+COPY . .
 
 RUN npm run build
 
-RUN npm prune --production
+FROM node:12.13-alpine as production
 
-FROM node:12-alpine as production-stage
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
 
-ENV APPLICATION_NAME=gb-demo-app
+WORKDIR /usr/src/app
 
-ENV NODE_ENV=production
+COPY package*.json ./
 
-WORKDIR /opt/$APPLICATION_NAME
+RUN npm install --only=production
 
+COPY . .
 
+COPY --from=development /usr/src/app/dist ./dist
 
+CMD ["node", "dist/apps/api/main.js"]

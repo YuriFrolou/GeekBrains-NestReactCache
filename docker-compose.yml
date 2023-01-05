@@ -1,62 +1,67 @@
-version: "3.9"
+version: '3.7'
 
 services:
-
-#  postgres:
-#    container_name: gb_news
-#    image: postgres
-#    environment:
-#      - POSTGRES_DB=gb_news
-#      - POSTGRES_USER=postgres
-#      - POSTGRES_PASSWORD=NnVvGET
-#    restart: unless-stopped
+#  main:
+#    container_name: main
+#    build:
+#      context: .
+#      target: development
 #    volumes:
-#      - ./etc/db/data:/var/lib/postgresql/data1
+#      - .:/usr/src/app
+#      - /usr/src/app/node_modules
 #    ports:
-#      - '5432:5432'
+#      - 3001:3001
+#    command: npm run start:api
+#    env_file:
+#      - .env
+#    networks:
+#      - webnet
+#    depends_on:
+#      - redis
+#      - postgres
+#  react:
+#    container_name: react
+#    build:
+#      context: ./
+#      dockerfile: ./apps/web/Dockerfile
+#    ports:
+#      - 3002:3002
+#    environment:
+#      - NODE_ENV=development
+#    volumes:
+#      - ./web:/usr/src/app
+#        - /usr/src/app/node_modules
+#    stdin_open: true
+#    tty: true
+#    depends_on:
+#      - main
 
   redis:
+    container_name: redis
     image: redis:6.0
     ports:
-      - "6379:6379"
+        - "6379:6379"
     volumes:
-      - redis:/data
-  redis-commander:
-    container_name: redis-commander
-    hostname: redis-commander
-    image: ghcr.io/joeferner/redis-commander:latest
+        - redis:/data
+    networks:
+      - webnet
+  postgres:
+    container_name: postgres
+    image: postgres:12
+    networks:
+      - webnet
     environment:
-      - REDIS_HOSTS=local:redis:6379
+      POSTGRES_PASSWORD: NnVvGET
+      POSTGRES_USER: postgres
+      POSTGRES_DB: gb_news
+      PG_DATA: /var/lib/postgresql/data
     ports:
-      - "8081:8081"
-#  base:
-#      container_name: base
-#      build:
-#        context: ./
-#        dockerfile: Dockerfile
-#
-#  api:
-#      container_name: api
-#      build:
-#        context: ./
-#        dockerfile: ./apps/api/Dockerfile
-#      ports:
-#        - 3001:3001
-#      environment:
-#        DB_HOST: host.docker.internal
-#        DB_USER: postgres
-#        DB_PASS: NnVvGET
-#
-#  web:
-#      container_name: web
-#      build:
-#        context: ./
-#        dockerfile: ./apps/web/Dockerfile
-#      ports:
-#        - 3002:3002
-
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+networks:
+  webnet:
 volumes:
+  pgdata:
   redis:
-       driver: local
-#  web:
-#       driver: local
+     driver: local

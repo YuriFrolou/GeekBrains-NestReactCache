@@ -17,7 +17,8 @@ export function Header(props: HeaderProps) {
           </button>
           <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div className="navbar-nav d-flex justify-content-end" style={{width:'90%'}}>
-              <NavLink className="nav-link" aria-current="page" to="/">All news</NavLink>
+              <NavLink className="nav-link" aria-current="page" to="/">Home</NavLink>
+              <NavLink className="nav-link" aria-current="page" to="/all">All news</NavLink>
               <NavLink className="nav-link" aria-current="page" to="/create">Create news</NavLink>
               <NavLink className="nav-link" to="/auth">Login</NavLink>
             </div>

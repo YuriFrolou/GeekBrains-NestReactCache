@@ -15,7 +15,8 @@ export function App() {
     <div>
       <Header/>
       <Routes>
-        <Route path="/" element={<News/>}/>
+        <Route path="/" element={<h1 style={{textAlign:"center",marginTop:"40px"}}>Проект: новости</h1>}/>
+        <Route path="/all" element={<News/>}/>
         <Route path="/detail/:id" element={<NewsDetail/>}/>
         <Route path="/create" element={<CreateNews/>}/>
         <Route path="/auth" element={<Auth/>}/>
