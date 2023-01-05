@@ -142,8 +142,9 @@ const deleteComment = async (event:any) => {
           <div key={comment.id} className="mb-1">
             <div className="card-body d-flex justify-content-between"  style={{boxShadow:'inset 0 0 2px rgba(128,128,128,0.5)', padding:'10px 5px'}}>
               <div style={{minWidth: '90%'}}>
-                <strong className="mb-1">{comment.user['lastName']} {comment.user['firstName']}</strong>
-                <textarea className="form-control mb-1" placeholder={comment.message} name="updatedMessage" onChange={onChangeComment} data-id={comment.id} style={{pointerEvents:getElementsInActive(comment),minWidth:'100%'}}></textarea>
+                <div>
+                  <div className="mb-2 me-4 rounded-circle bg-success bg-opacity-10 border-0" style={{width:'50px', height:'50px', overflow: 'hidden'}}><img src={comment.user['cover']} alt="" style={{display:'block',objectFit:'cover',width:'100%'}}/></div><strong className="mb-1">{comment.user['lastName']} {comment.user['firstName']}</strong></div>
+                  <textarea className="form-control mb-1" placeholder={comment.message} name="updatedMessage" onChange={onChangeComment} data-id={comment.id} style={{pointerEvents:getElementsInActive(comment),minWidth:'100%'}}></textarea>
                 <button onClick={onUpdate} value={comment.id} data-user={comment.user['id']} className="btn btn-outline-info btn-sm px-4 me-sm-3 fw-bold"  style={getElementsVisible(comment)}>Fix comment</button>
               </div>
               <button type="button" onClick={onDelete} value={comment.id} data-user={comment.user['id']} className="close border-0 bg-transparent fs-3 sticky-top" aria-label="Close" style={getElementsVisible(comment)}>

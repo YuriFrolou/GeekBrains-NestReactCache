@@ -17,6 +17,10 @@ let eTag: string | null;
 let cashNews: NewsProps[]=[];
 
 export function News() {
+  const sortNews = (news: NewsProps[]) => {
+    return news.sort((a, b) => a.id - b.id)
+  }
+
   const [news, setNews] = useState<Array<NewsProps>>();
   const getNews = async () => {
     const res = await fetch(`http://localhost:3001/api/news`, {
@@ -28,8 +32,9 @@ export function News() {
       eTag = res.headers.get('etag');
       const data = await res.json();
       console.log(data);
-      setNews(data);
-      cashNews = [...data];
+       const sortedNews = sortNews(data);
+       setNews(sortedNews);
+      cashNews = [...sortedNews];
      }else{
        throw new Error('Ошибка получения данных с сервера');
      }

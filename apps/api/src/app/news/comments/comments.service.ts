@@ -117,4 +117,5 @@ export class CommentsService {
     await this.commentRepository.remove(comment);
     return commentId;
   }
+
 }
